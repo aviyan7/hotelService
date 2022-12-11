@@ -6,6 +6,7 @@ import com.hotel.project.model.UserRole;
 import com.hotel.project.model.Role;
 import com.hotel.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -22,16 +23,19 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+//    @Autowired
+//    private BCryptPasswordEncoder bCryptPasswordEncoder;
+  
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
     public User createUser(@RequestBody User user) throws Exception {
         // Encrypting user password
-        user.setPassword(this.bCryptPasswordEncoder.encode(user.getPassword()));
+    	BCryptPasswordEncoder n = new BCryptPasswordEncoder();
+        user.setPassword(n.encode(user.getPassword()));
 
-        user.setProfile("default.png");
+
+//        user.setProfile("default.png");
         Set<UserRole> roles = new HashSet<>();
 
         Role role = new Role();
@@ -57,6 +61,7 @@ public class UserController {
     @GetMapping
     @ResponseStatus(code = HttpStatus.OK)
     public List<User> getAllUsers() {
+    	System.out.println("This is running");
         return userService.getUsers();
     }
 
