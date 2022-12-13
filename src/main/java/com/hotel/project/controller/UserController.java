@@ -30,6 +30,7 @@ public class UserController {
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
     public User createUser(@RequestBody User user) throws Exception {
+    	System.out.println("C:"+user);
         // Encrypting user password
     	BCryptPasswordEncoder n = new BCryptPasswordEncoder();
         user.setPassword(n.encode(user.getPassword()));
