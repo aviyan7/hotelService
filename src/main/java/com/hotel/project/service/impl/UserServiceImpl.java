@@ -1,12 +1,14 @@
 package com.hotel.project.service.impl;
 
-import com.hotel.project.service.UserService;
-import com.hotel.project.repository.RoleRepository;
-import com.hotel.project.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.hotel.project.model.User;
 import com.hotel.project.model.UserRole;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.hotel.project.repository.RoleRepository;
+import com.hotel.project.repository.UserRepository;
+import com.hotel.project.service.UserService;
 
 import java.util.List;
 import java.util.Optional;
@@ -56,8 +58,8 @@ public class UserServiceImpl implements UserService {
         if (optionalUser.isPresent()) {
             User updatedUser = optionalUser.get();
             updatedUser.setUsername(user.getUsername());
-            updatedUser.setFullName(user.getFullName());
-            updatedUser.setAddress(user.getAddress());
+            updatedUser.setFirstName(user.getFirstName());
+            updatedUser.setLastName(user.getLastName());
             updatedUser.setGender(user.getGender());
             updatedUser.setEmail(user.getEmail());
             updatedUser.setPhone(user.getPhone());
@@ -77,4 +79,34 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findById(id).isPresent()) userRepository.deleteById(id);
         else throw new Exception("User with id " + id + " doesn't exits !!!");
     }
+    
+    @Override
+    public User updateUserPassword(Long id, String password, String oldpassword) {
+    	Optional<User> optionalUser = userRepository.findById(id);
+    	System.out.println(oldpassword);
+    	System.out.println(password);
+        if (optionalUser != null) {
+        	User updatedUser = optionalUser.get();
+        	System.out.println(updatedUser.getPassword());
+        	BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        	String encodedPassword = passwordEncoder.encode(oldpassword);
+        	System.out.println(encodedPassword);
+        	if(updatedUser.getPassword()==encodedPassword) {
+        		System.out.println("password old "+oldpassword);
+        		System.out.println("password new "+password);
+        	}
+        	BCryptPasswordEncoder passwordEncoder1 = new BCryptPasswordEncoder();
+        	String encodedPassword1 = passwordEncoder.encode(password);
+        	System.out.println("password new "+encodedPassword1);
+//        	updatedUser.setPassword(encodedPassword);
+//        	userRepository.save(updatedUser);
+        }
+        return null;
+    }
+//    public User updateUserPassword(Long id) {
+//    	Optional<User> optionalUser = userRepository.findById(id);
+//        if (optionalUser != null) return 
+//        return null;
+//    }
+  
 }

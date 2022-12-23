@@ -2,14 +2,10 @@ package com.hotel.project.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,17 +18,14 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique=true)
     private String username;
     private String password;
-    private String fullName;
-    private String address;
-    private String gender;
-    @Column(unique=true)
+    private String firstName;
+    private String lastName;
     private String email;
-    @Column(unique=true)
     private String phone;
-//    private String profile;
+    private String gender;
+    private String profile;
     private boolean enabled = true;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)

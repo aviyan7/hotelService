@@ -1,15 +1,15 @@
 package com.hotel.project.controller;
 
-import com.hotel.project.service.UserService;
-import com.hotel.project.model.User;
-import com.hotel.project.model.UserRole;
-import com.hotel.project.model.Role;
-import com.hotel.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import com.hotel.project.model.Password;
+import com.hotel.project.model.Role;
+import com.hotel.project.model.User;
+import com.hotel.project.model.UserRole;
+import com.hotel.project.service.UserService;
 
 import java.util.HashSet;
 import java.util.List;
@@ -23,20 +23,16 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-//    @Autowired
-//    private BCryptPasswordEncoder bCryptPasswordEncoder;
-  
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
     public User createUser(@RequestBody User user) throws Exception {
-    	System.out.println("C:"+user);
         // Encrypting user password
-    	BCryptPasswordEncoder n = new BCryptPasswordEncoder();
-        user.setPassword(n.encode(user.getPassword()));
+        user.setPassword(this.bCryptPasswordEncoder.encode(user.getPassword()));
 
-
-//        user.setProfile("default.png");
+        user.setProfile("default.png");
         Set<UserRole> roles = new HashSet<>();
 
         Role role = new Role();
@@ -62,7 +58,6 @@ public class UserController {
     @GetMapping
     @ResponseStatus(code = HttpStatus.OK)
     public List<User> getAllUsers() {
-    	System.out.println("This is running");
         return userService.getUsers();
     }
 
@@ -89,4 +84,14 @@ public class UserController {
     public void deleteUsersById(@PathVariable("id") Long id) throws Exception {
         userService.deleteUserById(id);
     }
+    
+    @PostMapping("/update-password/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public User updateUserPassword(@PathVariable("id") Long id, @RequestBody Password password) {
+    	return this.userService.updateUserPassword(id, password.getPassword(), password.getOldpassword());
+    }
+//    @PostMapping("/update-password")
+//    public User updateUserPassword(User user, String password) {
+//    	return this.userService.updateUserPassword(user, password);
+//    }
 }
